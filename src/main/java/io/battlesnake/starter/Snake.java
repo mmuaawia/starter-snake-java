@@ -129,7 +129,7 @@ public class Snake {
      * @return a response back to the engine containing snake movement values.
      */
     public Map<String, String> move(JsonNode moveRequest) {
-
+      board = new int[HEIGHT][WIDTH];
       Map<String, String> response = new HashMap<>();
       //moveRequest.
       System.out.println(moveRequest.toString());
