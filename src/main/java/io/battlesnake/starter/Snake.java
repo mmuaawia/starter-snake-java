@@ -100,7 +100,6 @@ public class Snake {
      * /ping is called by the play application during the tournament or on play.battlesnake.io to make sure your
      * snake is still alive.
      *
-     * @param pingRequest a map containing the JSON sent to this snake. See the spec for details of what this contains.
      * @return an empty response.
      */
     public Map<String, String> ping() {
@@ -175,16 +174,22 @@ public class Snake {
       for (int i = 0 ; i < 4; i++){
         int nextX = currX + dx[i];
         int nextY = currY + dy[i];
-        if (nextX > -1 && nextX < HEIGHT && nextY > -1 && nextY < WIDTH){
-          if (board[nextY][nextX] != 2) {
+        if (isMoveValid(nextX,nextY)){
             moves.add(i);
-          }
         }
       }
       Random random = new Random();
       int index = random.nextInt(moves.size());
       return directionMap.get(moves.get(index));
 
+    }
+
+    private boolean isMoveValid(int x, int y){
+      return (isMoveInBoundary(x,y) && board[y][x] != 2);
+    }
+
+    private boolean isMoveInBoundary(int x, int y){
+      return (x > -1 && x < HEIGHT && y > -1 && y < WIDTH);
     }
 
 
