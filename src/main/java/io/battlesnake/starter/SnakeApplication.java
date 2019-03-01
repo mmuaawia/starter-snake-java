@@ -14,17 +14,15 @@ import static spark.Spark.post;
 import static spark.Spark.get;
 
 /**
- * Snake server that deals with requests from the snake engine.
+ * SnakeApplication server that deals with requests from the snake engine.
  * Just boiler plate code.  See the readme to get started.
  * It follows the spec here: https://github.com/battlesnakeio/docs/tree/master/apis/snake
  */
-public class Snake {
+public class SnakeApplication {
   private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
   private static final Handler HANDLER = new Handler();
-  private static final Logger LOG = LoggerFactory.getLogger(Snake.class);
-  private static int[][] board;
-  static int HEIGHT;
-  static int WIDTH;
+  private static final Logger LOG = LoggerFactory.getLogger(SnakeApplication.class);
+  private static Board board;
   static int health;
 
   /**
@@ -109,9 +107,10 @@ public class Snake {
      */
     public Map<String, String> start(JsonNode startRequest) {
       Map<String, String> response = new HashMap<>();
-      HEIGHT = startRequest.get("board").get("height").asInt();
-      WIDTH = startRequest.get("board").get("width").asInt();
+      int height = startRequest.get("board").get("height").asInt();
+      int width = startRequest.get("board").get("width").asInt();
       response.put("color", "#ff00ff");
+      board = new Board(new int[height][width], width, height);
       return response;
     }
 
@@ -122,7 +121,6 @@ public class Snake {
      * @return a response back to the engine containing snake movement values.
      */
     public Map<String, String> move(JsonNode moveRequest) {
-      board = new int[HEIGHT][WIDTH];
 
       Map<String, String> response = new HashMap<>();
       JsonNode food = moveRequest.get("board").get("food");
@@ -130,15 +128,17 @@ public class Snake {
       JsonNode self = moveRequest.get("you").get("body");
       health = moveRequest.get("you").get("health").asInt();
 
-      populateBoard(food, snakes, self);
-      logBoard();
+      board.populateBoard(food, snakes, self);
+      LOG.info(board.toString());
 
       int currX = self.get(0).get("x").asInt();
       int currY = self.get(0).get("y").asInt();
 
-      LOG.info("Current Position: (" + currX + "," + currY + ")");
+      Position position = new Position(currX, currY);
 
-      response.put("move", move(currX, currY));
+      LOG.info("Current Position: " + position.toString());
+
+      response.put("move", MoveHelper.getMove(position, board));
       return response;
     }
 
@@ -153,61 +153,5 @@ public class Snake {
       return response;
     }
 
-
-    private void populateBoard(JsonNode food, JsonNode snakes, JsonNode self) {
-      populateBoard(food, 1);
-      // snakes include self, but difference between other snakes and self might be important later on
-      //populateBoard(self, 2);
-      for (JsonNode snake : snakes) {
-        populateBoard(snake.get("body"), 2);
-      }
-
-    }
-
-    private void populateBoard(JsonNode arrOfStuff, int val) {
-      for (JsonNode coordinate : arrOfStuff) {
-        int x = coordinate.get("x").asInt();
-        int y = coordinate.get("y").asInt();
-        board[y][x] = val;
-      }
-    }
-
-    private String move(int currX, int currY) {
-      List<Moves> validMoves = new ArrayList<>();
-      for (Moves move : Moves.values()) {
-        int nextX = currX + move.xChange;
-        int nextY = currY + move.yChange;
-        if (isMoveValid(nextX, nextY)) {
-          validMoves.add(move);
-        }
-      }
-      Random random = new Random();
-      //will cause exception if no valid moves at the moment
-      int index = random.nextInt(validMoves.size());
-      return validMoves.get(index).toString();
-
-    }
-
-    private void logBoard() {
-      StringBuilder boardString = new StringBuilder();
-      boardString.append('\n');
-      for (int y = 0; y < HEIGHT; y++) {
-        for (int x = 0; x < WIDTH; x++) {
-          boardString.append(board[y][x]);
-          boardString.append(' ');
-        }
-        boardString.append('\n');
-      }
-      LOG.info(boardString.toString());
-    }
-
-    private boolean isMoveValid(int x, int y) {
-      return (isMoveInBoundary(x, y) && board[y][x] != 2);
-    }
-
-    private boolean isMoveInBoundary(int x, int y) {
-      return (x > -1 && x < WIDTH && y > -1 && y < HEIGHT);
-    }
   }
-
 }

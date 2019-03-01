@@ -1,6 +1,6 @@
 package io.battlesnake.starter;
 
-public enum Moves {
+public enum Move {
   LEFT  (-1,  0),
   RIGHT ( 1,  0),
   UP    ( 0, -1),
@@ -10,7 +10,7 @@ public enum Moves {
 
   public final int yChange;
 
-  Moves(int xChange, int yChange) {
+  Move(int xChange, int yChange) {
     this.xChange = xChange;
     this.yChange = yChange;
   }
