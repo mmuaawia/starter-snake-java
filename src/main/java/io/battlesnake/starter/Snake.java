@@ -116,7 +116,7 @@ public class Snake {
     public Map<String, String> start(JsonNode startRequest) {
       Map<String, String> response = new HashMap<>();
       HEIGHT = startRequest.get("board").get("height").asInt();
-      WIDTH = startRequest.get("board").get("wighth").asInt();
+      WIDTH = startRequest.get("board").get("width").asInt();
       board = new int[HEIGHT][WIDTH];
       response.put("color", "#ff00ff");
       return response;
@@ -129,6 +129,7 @@ public class Snake {
      * @return a response back to the engine containing snake movement values.
      */
     public Map<String, String> move(JsonNode moveRequest) {
+
       Map<String, String> response = new HashMap<>();
       //moveRequest.
       System.out.println(moveRequest.toString());
