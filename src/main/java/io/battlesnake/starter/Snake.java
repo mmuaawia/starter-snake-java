@@ -23,6 +23,9 @@ public class Snake {
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
     private static final Handler HANDLER = new Handler();
     private static final Logger LOG = LoggerFactory.getLogger(Snake.class);
+    private static int[][] board;
+    static int HEIGHT;
+    static int WIDTH;
 
     /**
      * Main entry point.
@@ -107,6 +110,9 @@ public class Snake {
          */
         public Map<String, String> start(JsonNode startRequest) {
             Map<String, String> response = new HashMap<>();
+            HEIGHT = startRequest.get("board").get("height").asInt();
+            WIDTH = startRequest.get("board").get("wighth").asInt();
+            board = new int[HEIGHT][WIDTH];
             response.put("color", "#ff00ff");
             return response;
         }
@@ -119,6 +125,8 @@ public class Snake {
          */
         public Map<String, String> move(JsonNode moveRequest) {
             Map<String, String> response = new HashMap<>();
+            //moveRequest.
+
             response.put("move", "right");
             return response;
         }
