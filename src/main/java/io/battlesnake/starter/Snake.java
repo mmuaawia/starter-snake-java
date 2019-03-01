@@ -26,7 +26,6 @@ public class Snake {
   static int HEIGHT;
   static int WIDTH;
   static int health;
-  static Map<Integer, String> directionMap = new HashMap<>();
 
   /**
    * Main entry point.
@@ -34,10 +33,6 @@ public class Snake {
    * @param args are ignored.
    */
   public static void main(String[] args) {
-    directionMap.put(0, "left");
-    directionMap.put(1, "down");
-    directionMap.put(2, "right");
-    directionMap.put(3, "up");
     String port = System.getProperty("PORT");
     if (port != null) {
       LOG.info("Found system provided port: {}", port);
@@ -47,7 +42,7 @@ public class Snake {
     }
     port(Integer.parseInt(port));
     get("/", (req, res) -> "Battlesnake documentation can be found at " +
-        "<a href=\"https://docs.battlesnake.io\">https://docs.battlesnake.io</a>.");
+    "<a href=\"https://docs.battlesnake.io\">https://docs.battlesnake.io</a>.");
     post("/start", HANDLER::process, JSON_MAPPER::writeValueAsString);
     post("/ping", HANDLER::process, JSON_MAPPER::writeValueAsString);
     post("/move", HANDLER::process, JSON_MAPPER::writeValueAsString);
@@ -116,7 +111,6 @@ public class Snake {
       Map<String, String> response = new HashMap<>();
       HEIGHT = startRequest.get("board").get("height").asInt();
       WIDTH = startRequest.get("board").get("width").asInt();
-      board = new int[HEIGHT][WIDTH];
       response.put("color", "#ff00ff");
       return response;
     }
@@ -128,70 +122,27 @@ public class Snake {
      * @return a response back to the engine containing snake movement values.
      */
     public Map<String, String> move(JsonNode moveRequest) {
+      LOG.info(moveRequest.toString());
+
       board = new int[HEIGHT][WIDTH];
+
       Map<String, String> response = new HashMap<>();
-      //moveRequest.
-      System.out.println(moveRequest.toString());
-//      System.out.println(moveRequest.);
       JsonNode food = moveRequest.get("board").get("food");
       JsonNode snakes = moveRequest.get("board").get("snakes");
+      JsonNode self = moveRequest.get("you").get("body");
       health = moveRequest.get("you").get("health").asInt();
 
-      JsonNode self = moveRequest.get("you").get("body");
-      populateGrid(food, snakes, self);
+      populateBoard(food, snakes, self);
+      logBoard();
+
       int currX = self.get(0).get("x").asInt();
       int currY = self.get(0).get("y").asInt();
 
-
-
+      LOG.info("Current Position: (" + currX + "," + currY + ")");
 
       response.put("move", move(currX, currY));
       return response;
     }
-
-
-    private void populateGrid(JsonNode food, JsonNode snakes, JsonNode self) {
-      populateGrid(food, 1);
-      populateGrid(self, 2);
-      for (JsonNode snake : snakes) {
-        populateGrid(snake.get("body"), 2);
-      }
-
-    }
-
-    private void populateGrid(JsonNode arrOfStuff, int val){
-      for (JsonNode coordinates : arrOfStuff) {
-        int x = coordinates.get("x").asInt();
-        int y = coordinates.get("y").asInt();
-        board[y][x] = val;
-      }
-    }
-
-    private String move(int currX, int currY) {
-      int[] dx = {-1, 0, 1, 0};
-      int[] dy = {0, 1, 0, -1};
-      List<Integer> moves = new ArrayList<>();
-      for (int i = 0 ; i < 4; i++){
-        int nextX = currX + dx[i];
-        int nextY = currY + dy[i];
-        if (isMoveValid(nextX,nextY)){
-            moves.add(i);
-        }
-      }
-      Random random = new Random();
-      int index = random.nextInt(moves.size());
-      return directionMap.get(moves.get(index));
-
-    }
-
-    private boolean isMoveValid(int x, int y){
-      return (isMoveInBoundary(x,y) && board[y][x] != 2);
-    }
-
-    private boolean isMoveInBoundary(int x, int y){
-      return (x > -1 && x < HEIGHT && y > -1 && y < WIDTH);
-    }
-
 
     /**
      * /end is called by the engine when a game is complete.
@@ -202,6 +153,62 @@ public class Snake {
     public Map<String, String> end(JsonNode endRequest) {
       Map<String, String> response = new HashMap<>();
       return response;
+    }
+
+
+    private void populateBoard(JsonNode food, JsonNode snakes, JsonNode self) {
+      populateBoard(food, 1);
+      // snakes include self, but difference between other snakes and self might be important later on
+      //populateBoard(self, 2);
+      for (JsonNode snake : snakes) {
+        populateBoard(snake.get("body"), 2);
+      }
+
+    }
+
+    private void populateBoard(JsonNode arrOfStuff, int val) {
+      for (JsonNode coordinate : arrOfStuff) {
+        int x = coordinate.get("x").asInt();
+        int y = coordinate.get("y").asInt();
+        board[y][x] = val;
+      }
+    }
+
+    private String move(int currX, int currY) {
+      List<Moves> validMoves = new ArrayList<>();
+      for (Moves move : Moves.values()) {
+        int nextX = currX + move.xChange;
+        int nextY = currY + move.yChange;
+        if (isMoveValid(nextX, nextY)) {
+          validMoves.add(move);
+        }
+      }
+      Random random = new Random();
+      //will cause exception if no valid moves at the moment
+      int index = random.nextInt(validMoves.size());
+      return validMoves.get(index).toString();
+
+    }
+
+    private void logBoard() {
+      StringBuilder boardString = new StringBuilder();
+      boardString.append('\n');
+      for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+          boardString.append(board[y][x]);
+          boardString.append(' ');
+        }
+        boardString.append('\n');
+      }
+      LOG.info(boardString.toString());
+    }
+
+    private boolean isMoveValid(int x, int y) {
+      return (isMoveInBoundary(x, y) && board[y][x] != 2);
+    }
+
+    private boolean isMoveInBoundary(int x, int y) {
+      return (x > -1 && x < WIDTH && y > -1 && y < HEIGHT);
     }
   }
 
