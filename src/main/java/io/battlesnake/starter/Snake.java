@@ -122,8 +122,6 @@ public class Snake {
      * @return a response back to the engine containing snake movement values.
      */
     public Map<String, String> move(JsonNode moveRequest) {
-      LOG.info(moveRequest.toString());
-
       board = new int[HEIGHT][WIDTH];
 
       Map<String, String> response = new HashMap<>();
