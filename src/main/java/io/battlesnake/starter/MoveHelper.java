@@ -1,8 +1,13 @@
 package io.battlesnake.starter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class MoveHelper {
+  private static final Logger LOG = LoggerFactory.getLogger(MoveHelper.class);
+
 
   public static boolean isMoveValid(Position position, Move move, Board board) {
     Position newPosition = position.move(move);
@@ -164,5 +169,23 @@ public class MoveHelper {
       }
     }
     return false;
+  }
+
+  public static Move returnKillMove(Position position, Board board){
+    if(!SnakeApplication.Handler.youAreAlpha(board)){
+      return null;
+    }
+    for (Move move : Move.values()) {
+      if (MoveHelper.isMoveValid(position, move, board)) {
+        Position proposedPosition = position.move(move);
+        for(Position enemyHead : board.enemyHeads){
+          if(Move.isPositionOneMoveAway(proposedPosition,enemyHead)){
+            LOG.info("KILL MOVE FOUND");
+            return move;
+          }
+        }
+      }
+    }
+    return null;
   }
 }
