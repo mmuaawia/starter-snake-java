@@ -132,7 +132,7 @@ public class SnakeApplication {
       JsonNode tailNode = self.get(self.size()-1);
       int tailX = tailNode.get("x").asInt();
       int tailY = tailNode.get("y").asInt();
-
+      LOG.info(tailNode.toString());
       Position tailPos = new Position(tailX, tailY);
 
       board.populateBoard(food, snakes, self);
@@ -144,11 +144,11 @@ public class SnakeApplication {
       Position position = new Position(currX, currY);
 
       LOG.info("Current Position: " + position.toString());
-//      if (health > healthThresh(moveRequest.get("turn").asInt())) {
-//        board.grid[tailY][tailX] = 0;
-//        response.put("move", MoveHelper.followTail(position, tailPos, board));
-//        return response;
-//      }
+      if (health > healthThresh(moveRequest.get("turn").asInt())) {
+        board.grid[tailY][tailX] = 0;
+        response.put("move", MoveHelper.followTail(position, tailPos, board));
+        return response;
+      }
       response.put("move", MoveHelper.getMove(position, board));
       return response;
     }
@@ -169,10 +169,10 @@ public class SnakeApplication {
         return 100;
       }
       if (turn < 30) {
-        return 80;
+        return 95;
       }
       else {
-        return Math.max(30, (250 - turn)/3);
+        return Math.max(40, (250 - turn)/3);
       }
 
     }
