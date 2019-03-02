@@ -62,7 +62,7 @@ public class MoveHelper {
     Queue<Position> toVisit = new LinkedList<>();
 
     for (Move move : Move.values()) {
-      if (MoveHelper.isMoveValid(position, move, board)) {
+      if (MoveHelper.isMoveValid(position, move, board) && !isSuicide(position,move,board)) {
         int amountOfSpace = 1;
         toVisit.add(position.move(move));
 
