@@ -1,5 +1,7 @@
 package io.battlesnake.starter;
 
+import javafx.geometry.Pos;
+
 import java.util.*;
 
 public class MoveHelper {
@@ -75,6 +77,16 @@ public class MoveHelper {
 
 
     return foods[bestFoodIndex];
+  }
+
+  public static ArrayList<PositionNode> getCloseFoods(ArrayList<PositionNode> foods, Position position, int range){
+    ArrayList<PositionNode> closerFoods = new ArrayList<>();
+    for(PositionNode food : foods){
+      if(Math.abs(food.y - position.y) < range && Math.abs(food.x - position.x) < range){
+        closerFoods.add(food);
+      }
+    }
+    return closerFoods;
   }
 
   public static Move getMoveToClosestFood(int x, int y, Board board) {
