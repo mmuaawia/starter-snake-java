@@ -172,7 +172,11 @@ public class SnakeApplication {
         return 95;
       }
       else {
+<<<<<<< HEAD
         return Math.max(70, (250 - turn)/3);
+=======
+        return Math.max(40, (250 - turn)/3);
+>>>>>>> a0281976f0d2573334c436f1b6a1d803786cfb2f
       }
 
     }
