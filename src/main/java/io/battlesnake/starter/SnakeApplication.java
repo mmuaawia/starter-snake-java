@@ -149,7 +149,7 @@ public class SnakeApplication {
         Move killMove = MoveHelper.returnKillMove(position, board);
         if (killMove != null) {
           if(doLogging){LOG.info("Using KillMove");}
-          response.put("move", killMove);
+          response.put("move", killMove.toString());
         }
         String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
         if(nextMove == null && doLogging){LOG.info("we are alpha, no closest food food, using last resort");}
