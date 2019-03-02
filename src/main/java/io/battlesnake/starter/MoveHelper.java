@@ -52,8 +52,13 @@ public class MoveHelper {
   public static String lastResortMove(Position position, Board board) {
     Move lastResortMove;
 
-    lastResortMove = getMoveIntoDirectionWithSpace(position,board,7);
+    lastResortMove = getMoveIntoDirectionWithSpace(position,board,10);
     if(lastResortMove == null){
+      for (Move move : Move.values()) {
+        if (MoveHelper.isMoveValid(position, move, board)){
+           return move.toString();
+        }
+      }
       //were dead
       return "left";
     }
@@ -95,7 +100,7 @@ public class MoveHelper {
         }
       }
     }
-    if(SnakeApplication.doLogging){LOG.info("Moving into direction: "+bestCase.toString()+" because amount of spaces found was not good enough: "+ bestAmountOfSpace);}
+    if(bestCase != null && SnakeApplication.doLogging){LOG.info("Moving into direction: "+bestCase.toString()+" because amount of spaces found was not good enough: "+ bestAmountOfSpace);}
     return bestCase;
   }
 
@@ -216,14 +221,11 @@ public class MoveHelper {
   }
 
   public static Move returnKillMove(Position position, Board board){
-    if(!SnakeApplication.Handler.youAreAlpha(board)){
-      return null;
-    }
     for (Move move : Move.values()) {
       if (MoveHelper.isMoveValid(position, move, board)) {
         Position proposedPosition = position.move(move);
-        for(Position enemyHead : board.enemyHeads){
-          if(Move.isPositionOneMoveAway(proposedPosition,enemyHead)){
+        for(int index = 0 ; index < board.enemyHeads.size(); index++){
+          if(Move.isPositionOneMoveAway(proposedPosition,board.enemyHeads.get(index)) && board.ourLength > board.enemyLengths.get(index)){
             if(SnakeApplication.doLogging){LOG.info("KILL MOVE FOUND");}
             return move;
           }
