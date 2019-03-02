@@ -10,10 +10,11 @@ public class MoveHelper {
     return (isPositionInBounds(newPosition, board.width, board.height) && board.grid[newPosition.y][newPosition.x] < 2);
   }
 
-  public static boolean isMoveValidForEnemy(Position position, Move move, Board board) {
+  public static boolean isMoveValidForFoodToEnemy(Position position, Move move, Board board) {
     Position newPosition = position.move(move);
     return isPositionInBounds(newPosition, board.width, board.height)
-        && board.grid[newPosition.y][newPosition.x] < 2;
+        && board.grid[newPosition.y][newPosition.x] < 2
+        && board.grid[newPosition.y][newPosition.y] != 3;
   }
 
 
@@ -35,22 +36,26 @@ public class MoveHelper {
     return validMoves.get(index).toString();
   }
 
-  public static Position bestFood(Position[] foods, Board board) {
+  public static Position bestFood(PositionNode[] foods, Board board) {
     int[][] grid = board.grid;
     int bestPos = 0;
-    int bestDist = Integer.MAX_VALUE;
+    int bestDist = Integer.MIN_VALUE;
     boolean visited[][];
 
-    for (Position foodPos : foods) {
+    for (PositionNode foodPos : foods) {
       visited = new boolean[board.height][board.width];
       int closestSnake = Integer.MAX_VALUE;
 
-      Queue<Position> q = new LinkedList<>();
+      Queue<PositionNode> q = new LinkedList<>();
       q.add(foodPos);
       while (!q.isEmpty()) {
-        Position currPos = q.poll();
+        PositionNode currPos = q.poll();
+        //visited[][]
         if (grid[currPos.y][currPos.x] == 3) {
-            closestSnake = Math.min(closestSnake, currPos.dist);
+            closestSnake = Math.min(closestSnake, currPos.distance);
+        }
+        for (Move move : Move.values()) {
+          //isMoveValid()
         }
 
 
