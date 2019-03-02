@@ -158,8 +158,8 @@ public class SnakeApplication {
       return response;
     }
 
-    private boolean youAreAlpha(Board board) {
-        return false;
+    public static boolean youAreAlpha(Board board) {
+        return board.ourLength > board.maxEnemySnakeLength;
     }
 
     /**

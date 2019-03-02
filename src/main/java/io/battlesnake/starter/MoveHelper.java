@@ -142,7 +142,7 @@ public class MoveHelper {
   }
 
   public static boolean isSuicide(Position position, Move move, Board board){
-    if(board.ourLength > board.maxEnemySnakeLength){
+    if(SnakeApplication.Handler.youAreAlpha(board)){
       return false;
     }
     Position proposedPosition = position.move(move);
