@@ -100,6 +100,7 @@ public class MoveHelper {
         }
       }
     }
+    if(SnakeApplication.doLogging){LOG.info("returning closest move instead of safest move");}
     return closestFoodMove;
 
 
@@ -158,8 +159,9 @@ public class MoveHelper {
   }
 
   public static String followTail(Position position, Position tailPos, Board board) {
-      String move = bfs(position, tailPos, board);
-      return move == null ? lastResortMove(position, board) : move;
+    String move = bfs(position, tailPos, board);
+    if(SnakeApplication.doLogging && move == null){LOG.info("Using last resort during follow tail");}
+    return move == null ? lastResortMove(position, board) : move;
   }
 
   public static boolean isSuicide(Position position, Move move, Board board){
@@ -169,6 +171,7 @@ public class MoveHelper {
     Position proposedPosition = position.move(move);
     for(int index = 0; index < board.enemyHeads.size(); index++){
       if(board.enemyLengths.get(index) > board.ourLength && Move.isPositionOneMoveAway(board.enemyHeads.get(0), proposedPosition)){
+        if(SnakeApplication.doLogging){LOG.info("Move is suicide , use something else");}
         return true;
       }
     }
@@ -184,7 +187,7 @@ public class MoveHelper {
         Position proposedPosition = position.move(move);
         for(Position enemyHead : board.enemyHeads){
           if(Move.isPositionOneMoveAway(proposedPosition,enemyHead)){
-            LOG.info("KILL MOVE FOUND");
+            if(SnakeApplication.doLogging){LOG.info("KILL MOVE FOUND");}
             return move;
           }
         }
