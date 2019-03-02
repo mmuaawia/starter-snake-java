@@ -1,12 +1,8 @@
 package io.battlesnake.starter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.*;
 
 public class MoveHelper {
-  private static final Logger LOG = LoggerFactory.getLogger(MoveHelper.class);
 
   public static boolean isMoveValid(Position position, Move move, Board board) {
     Position newPosition = position.move(move);
