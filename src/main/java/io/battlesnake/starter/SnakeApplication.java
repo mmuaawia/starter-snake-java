@@ -24,7 +24,7 @@ public class SnakeApplication {
   private static final Logger LOG = LoggerFactory.getLogger(SnakeApplication.class);
   private static Board board;
   static int health;
-  private static boolean doLogging = false;
+  private static boolean doLogging = true;
 
   /**
    * Main entry point.
