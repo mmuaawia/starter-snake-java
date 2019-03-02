@@ -132,7 +132,7 @@ public class SnakeApplication {
       JsonNode tailNode = self.get(self.size()-1);
       int tailX = tailNode.get("x").asInt();
       int tailY = tailNode.get("y").asInt();
-
+      LOG.info(tailNode.toString());
       Position tailPos = new Position(tailX, tailY);
 
       board.populateBoard(food, snakes, self);

@@ -27,7 +27,10 @@ public class Board {
     int count = 0;
 
     for (JsonNode snake : snakes) {
-      if(count == 0){
+      if(
+          self.get(0).get("x").asInt() == snake.get(0).get("x").asInt()
+              && self.get(0).get("y").asInt() == snake.get(0).get("y").asInt()
+      ){
         populateBoard(snake.get("body"), 4);
       }
       else{
