@@ -24,6 +24,7 @@ public class SnakeApplication {
   private static final Logger LOG = LoggerFactory.getLogger(SnakeApplication.class);
   private static Board board;
   static int health;
+  public Position tail;
 
   /**
    * Main entry point.
@@ -128,6 +129,12 @@ public class SnakeApplication {
       JsonNode self = moveRequest.get("you").get("body");
       health = moveRequest.get("you").get("health").asInt();
 
+      JsonNode tailNode = self.get(self.size()-1);
+      int tailX = tailNode.get("x").asInt();
+      int tailY = tailNode.get("y").asInt();
+
+      Position tailPos = new Position(tailX, tailY);
+
       board.populateBoard(food, snakes, self);
       LOG.info(board.toString());
 
@@ -137,7 +144,10 @@ public class SnakeApplication {
       Position position = new Position(currX, currY);
 
       LOG.info("Current Position: " + position.toString());
-
+      if (health > healthThresh(moveRequest.get("turn").asInt())) {
+        response.put("move", MoveHelper.followTail(position, tailPos, board));
+        return response;
+      }
       response.put("move", MoveHelper.getMove(position, board));
       return response;
     }
@@ -151,6 +161,19 @@ public class SnakeApplication {
     public Map<String, String> end(JsonNode endRequest) {
       Map<String, String> response = new HashMap<>();
       return response;
+    }
+
+    static int healthThresh(int turn) {
+      if (turn < 15) {
+        return 100;
+      }
+      if (turn < 30) {
+        return 80;
+      }
+      else {
+        return Math.max(30, (250 - turn)/3);
+      }
+
     }
 
   }

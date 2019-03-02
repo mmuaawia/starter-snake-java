@@ -132,4 +132,7 @@ public class MoveHelper {
     return closerFoods;
   }
 
+  public static String followTail(Position position, Position tailPos, Board board) {
+      return bfs(position, tailPos, board);
+  }
 }
