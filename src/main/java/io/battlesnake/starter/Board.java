@@ -27,6 +27,7 @@ public class Board {
     int count = 0;
 
     for (JsonNode snake : snakes) {
+      System.out.println(self.get(0) +" " + snake.get(0));
       if(
           self.get(0).get("x").asInt() == snake.get(0).get("x").asInt()
               && self.get(0).get("y").asInt() == snake.get(0).get("y").asInt()
