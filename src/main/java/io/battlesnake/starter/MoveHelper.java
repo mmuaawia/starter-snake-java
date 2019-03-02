@@ -120,15 +120,15 @@ public class MoveHelper {
     return foods.get(bestFoodIndex);
   }
 
-  public static ArrayList<PositionNode> getCloseFoods(ArrayList<PositionNode> foods, Position position, int range){
+  public static ArrayList<PositionNode> getCloseFoods(ArrayList<PositionNode> foods, Position position, int maxAmountOfMoves){
     ArrayList<PositionNode> closerFoods = new ArrayList<>();
     for(PositionNode food : foods){
-      if(Math.abs(food.y - position.y) < range && Math.abs(food.x - position.x) < range){
+      int distance = Math.abs(food.y - position.y) + Math.abs(food.x - position.x);
+      if(distance <= maxAmountOfMoves){
         closerFoods.add(food);
       }
     }
     return closerFoods;
   }
-
 
 }
