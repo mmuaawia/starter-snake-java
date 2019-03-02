@@ -189,9 +189,9 @@ public class SnakeApplication {
         return 100;
       }
       if (turn < 50) {
-        return 95;
+        return 100;
       }
-      else return 94;
+      else return 100;
 
 
     }
