@@ -214,7 +214,7 @@ public class MoveHelper {
     for(int index = 0; index < board.enemyHeads.size(); index++){
       if(board.enemyLengths.get(index) > board.ourLength && Move.isPositionOneMoveAway(board.enemyHeads.get(index), proposedPosition)){
         if(SnakeApplication.doLogging){LOG.info("Move is suicide , use something else");}
-        return true
+        return true;
       }
     }
     return false;
