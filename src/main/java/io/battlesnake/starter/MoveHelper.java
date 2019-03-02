@@ -13,8 +13,8 @@ public class MoveHelper {
   public static boolean isMoveValidForFoodToEnemy(Position position, Move move, Board board) {
     Position newPosition = position.move(move);
     return isPositionInBounds(newPosition, board.width, board.height)
-        && board.grid[newPosition.y][newPosition.x] < 2
-        && board.grid[newPosition.y][newPosition.y] != 3;
+        && (board.grid[newPosition.y][newPosition.x] < 2
+        || board.grid[newPosition.y][newPosition.x] == 3);
   }
 
 
@@ -38,10 +38,11 @@ public class MoveHelper {
 
   public static Position bestFood(PositionNode[] foods, Board board) {
     int[][] grid = board.grid;
-    int bestPos = 0;
-    int bestDist = Integer.MIN_VALUE;
+    int bestFoodIndex = 0;
+    int greatestDist = Integer.MIN_VALUE;
     boolean visited[][];
 
+    int i = 0;
     for (PositionNode foodPos : foods) {
       visited = new boolean[board.height][board.width];
       int closestSnake = Integer.MAX_VALUE;
@@ -50,21 +51,30 @@ public class MoveHelper {
       q.add(foodPos);
       while (!q.isEmpty()) {
         PositionNode currPos = q.poll();
-        //visited[][]
+        visited[currPos.y][currPos.x] = true;
         if (grid[currPos.y][currPos.x] == 3) {
-            closestSnake = Math.min(closestSnake, currPos.distance);
+            closestSnake = currPos.distance;
+            break;
         }
         for (Move move : Move.values()) {
-          //isMoveValid()
+          if (isMoveValidForFoodToEnemy(currPos, move, board)) {
+              PositionNode nextPos = (PositionNode) currPos.move(move);
+              nextPos.distance = currPos.distance + 1;
+              if (!visited[nextPos.y][nextPos.x])
+                q.add(nextPos);
+          }
         }
-
-
       }
+      if (closestSnake > greatestDist) {
+        greatestDist = closestSnake;
+        bestFoodIndex = i;
+      }
+      i++;
+
     }
 
 
-    return foods[bestPos];
-
+    return foods[bestFoodIndex];
   }
 
   public static Move getMoveToClosestFood(int x, int y, Board board) {
