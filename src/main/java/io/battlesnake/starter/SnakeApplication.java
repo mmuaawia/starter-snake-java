@@ -24,7 +24,7 @@ public class SnakeApplication {
   private static final Logger LOG = LoggerFactory.getLogger(SnakeApplication.class);
   private static Board board;
   static int health;
-  public Position tail;
+  private static boolean doLogging = false;
 
   /**
    * Main entry point.
@@ -34,9 +34,9 @@ public class SnakeApplication {
   public static void main(String[] args) {
     String port = System.getProperty("PORT");
     if (port != null) {
-      LOG.info("Found system provided port: {}", port);
+      if(doLogging){LOG.info("Found system provided port: {}", port);}
     } else {
-      LOG.info("Using default port: {}", port);
+      if(doLogging){LOG.info("Using default port: {}", port);}
       port = "8080";
     }
     port(Integer.parseInt(port));
@@ -69,7 +69,7 @@ public class SnakeApplication {
       try {
         JsonNode parsedRequest = JSON_MAPPER.readTree(req.body());
         String uri = req.uri();
-        LOG.info("{} called with: {}", uri, req.body());
+        if(doLogging){LOG.info("{} called with: {}", uri, req.body());}
         Map<String, String> snakeResponse;
         if (uri.equals("/start")) {
           snakeResponse = start(parsedRequest);
@@ -82,10 +82,10 @@ public class SnakeApplication {
         } else {
           throw new IllegalAccessError("Strange call made to the snake: " + uri);
         }
-        LOG.info("Responding with: {}", JSON_MAPPER.writeValueAsString(snakeResponse));
+        if(doLogging){LOG.info("Responding with: {}", JSON_MAPPER.writeValueAsString(snakeResponse));}
         return snakeResponse;
       } catch (Exception e) {
-        LOG.warn("Something went wrong!", e);
+        if(doLogging){LOG.warn("Something went wrong!", e);}
         return null;
       }
     }
@@ -132,18 +132,19 @@ public class SnakeApplication {
       JsonNode tailNode = self.get(self.size()-1);
       int tailX = tailNode.get("x").asInt();
       int tailY = tailNode.get("y").asInt();
-      LOG.info(tailNode.toString());
+      if(doLogging){LOG.info(tailNode.toString());}
       Position tailPos = new Position(tailX, tailY);
 
       board.populateBoard(food, snakes, self);
-      LOG.info(board.toString());
+      if(doLogging){LOG.info(board.toString());}
 
       int currX = self.get(0).get("x").asInt();
       int currY = self.get(0).get("y").asInt();
 
       Position position = new Position(currX, currY);
 
-      LOG.info("Current Position: " + position.toString());
+      if(doLogging){LOG.info("Current Position: " + position.toString());}
+
       if (youAreAlpha(board)) {
         String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
         response.put("move", nextMove == null ? MoveHelper.lastResortMove(position, board) : nextMove);

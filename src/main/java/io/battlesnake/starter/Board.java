@@ -1,8 +1,6 @@
 package io.battlesnake.starter;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -16,9 +14,6 @@ public class Board {
   public ArrayList<Integer> enemyLengths;
   public int ourLength;
   public int maxEnemySnakeLength;
-
-  private static final Logger LOG = LoggerFactory.getLogger(SnakeApplication.class);
-
 
   public Board(int[][] grid, int width, int height) {
     this.grid = grid;
@@ -37,7 +32,6 @@ public class Board {
     populateBoard(food, 1);
 
     for (JsonNode snake : snakes) {
-      System.out.println(self.get(0) +" " + snake.get(0));
       if(
           self.get(0).get("x").asInt() == snake.get("body").get(0).get("x").asInt()
               && self.get(0).get("y").asInt() == snake.get("body").get(0).get("y").asInt()
