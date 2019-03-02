@@ -29,9 +29,10 @@ public class MoveHelper {
 
   public static String getMove(Position position, Board board) {
     if (board.foods.isEmpty()) return lastResortMove(position, board);
-    List<PositionNode> closeFoods = getCloseFoods(board.foods, position, Math.min(board.height/3, 5));
+    int maxMoves = Math.min(board.height/3, 5);
+    List<PositionNode> closeFoods = getCloseFoods(board.foods, position, maxMoves);
     if (closeFoods.isEmpty()) return lastResortMove(position, board);
-    Position bestFood = safestFood(closeFoods, board);
+    Position bestFood = safestFood(closeFoods, board, maxMoves);
     String move = bfs(position, bestFood, board);
     String lastResortMove = lastResortMove(position, board);
     if (move != null && isSuicide(position, Move.valueOf(move.toUpperCase()), board)) {
@@ -106,7 +107,7 @@ public class MoveHelper {
   }
   /* returns the position of food from foods which is furthest away from enemy snake
    */
-  public static Position safestFood(List<PositionNode> foods, Board board) {
+  public static Position safestFood(List<PositionNode> foods, Board board, int maxAmountOfMoves) {
     int[][] grid = board.grid;
     int bestFoodIndex = 0;
     int greatestDist = Integer.MIN_VALUE;
@@ -138,6 +139,9 @@ public class MoveHelper {
       if (closestSnake > greatestDist) {
         greatestDist = closestSnake;
         bestFoodIndex = i;
+        if (maxAmountOfMoves > greatestDist){
+          break;
+        }
       }
       i++;
 
