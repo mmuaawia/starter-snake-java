@@ -169,7 +169,7 @@ public class SnakeApplication {
         return 100;
       }
       if (turn < 30) {
-        return 80;
+        return 95;
       }
       else {
         return Math.max(40, (250 - turn)/3);
