@@ -171,10 +171,28 @@ public class SnakeApplication {
       if (turn < 30) {
         return 95;
       }
-      else {
-        return Math.max(72, (250 - turn)/3);
-
+      if (turn < 50) {
+        return 88;
       }
+      if (turn < 70) {
+        return 84;
+      }
+      if (turn < 100) {
+        return 73;
+      }
+      if (turn < 140) {
+        return 65;
+      }
+      if (turn < 170) {
+        return 60;
+      }
+      if (turn < 200) {
+        return 55;
+      }
+      else {
+        return 50;
+      }
+
 
     }
 
