@@ -146,7 +146,7 @@ public class SnakeApplication {
       LOG.info("Current Position: " + position.toString());
       if (youAreAlpha(board)) {
         String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
-        response.put("move", nextMove == null ? MoveHelper.shitMove(position, board) : nextMove);
+        response.put("move", nextMove == null ? MoveHelper.lastResortMove(position, board) : nextMove);
         return response;
       }
       if (health > healthThresh(moveRequest.get("turn").asInt())) {
@@ -186,7 +186,7 @@ public class SnakeApplication {
         return 93;
       }
       else {
-        return 88;
+        return 90;
       }
 
 
