@@ -164,7 +164,7 @@ public class SnakeApplication {
       }
 
 
-      response.put("move", MoveHelper.getMove(position, board));
+      response.put("move", MoveHelper.getMove(position, board, moveRequest.get("turn").asInt()));
       return response;
     }
 

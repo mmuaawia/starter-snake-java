@@ -27,8 +27,16 @@ public class MoveHelper {
   }
 
 
-  public static String getMove(Position position, Board board) {
+  public static String getMove(Position position, Board board, int turn) {
     if (board.foods.isEmpty()) return lastResortMove(position, board);
+    int maxBound = 4;
+    if (turn > 30) {
+      maxBound = 3;
+    }
+    if (turn > 60)
+    {
+      maxBound =2;
+    }
     int maxMoves = Math.min(board.height/3, 4);
     List<PositionNode> closeFoods = getCloseFoods(board.foods, position, maxMoves);
     if (closeFoods.isEmpty()) return lastResortMove(position, board);
