@@ -29,7 +29,7 @@ public class MoveHelper {
 
   public static String getMove(Position position, Board board) {
     if (board.foods.isEmpty()) return lastResortMove(position, board);
-    int maxMoves = Math.min(board.height/3, 5);
+    int maxMoves = Math.min(board.height/3, 4);
     List<PositionNode> closeFoods = getCloseFoods(board.foods, position, maxMoves);
     if (closeFoods.isEmpty()) return lastResortMove(position, board);
     Position bestFood = safestFood(closeFoods, board, maxMoves);
@@ -123,6 +123,10 @@ public class MoveHelper {
       while (!q.isEmpty()) {
         PositionNode currPos = q.poll();
         visited[currPos.y][currPos.x] = true;
+        if (currPos.distance > maxAmountOfMoves) {
+          closestSnake = currPos.distance + 1;
+          break;
+        }
         if (grid[currPos.y][currPos.x] == 3) {
             closestSnake = currPos.distance;
             break;
@@ -139,7 +143,7 @@ public class MoveHelper {
       if (closestSnake > greatestDist) {
         greatestDist = closestSnake;
         bestFoodIndex = i;
-        if (maxAmountOfMoves > greatestDist){
+        if (greatestDist > maxAmountOfMoves){
           break;
         }
       }
