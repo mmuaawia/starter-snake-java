@@ -29,17 +29,16 @@ public class MoveHelper {
 
   public static String getMove(Position position, Board board) {
     if (board.foods.isEmpty()) return lastResortMove(position, board);
-    List<PositionNode> closeFoods = getCloseFoods(board.foods, position, board.height*6 / 11);
+    int maxMoves = Math.min(board.height/3, 4);
+    List<PositionNode> closeFoods = getCloseFoods(board.foods, position, maxMoves);
     if (closeFoods.isEmpty()) return lastResortMove(position, board);
-    Position bestFood = safestFood(closeFoods, board);
+    Position bestFood = safestFood(closeFoods, board, maxMoves);
     String move = bfs(position, bestFood, board);
     String lastResortMove = lastResortMove(position, board);
     if (move != null && isSuicide(position, Move.valueOf(move.toUpperCase()), board)) {
       move = lastResortMove;
     }
     return move == null ? lastResortMove : move ;
-
-
   }
 
   public static String lastResortMove(Position position, Board board) {
@@ -129,7 +128,7 @@ public class MoveHelper {
   }
   /* returns the position of food from foods which is furthest away from enemy snake
    */
-  public static Position safestFood(List<PositionNode> foods, Board board) {
+  public static Position safestFood(List<PositionNode> foods, Board board, int maxAmountOfMoves) {
     int[][] grid = board.grid;
     int bestFoodIndex = 0;
     int greatestDist = Integer.MIN_VALUE;
@@ -145,6 +144,10 @@ public class MoveHelper {
       while (!q.isEmpty()) {
         PositionNode currPos = q.poll();
         visited[currPos.y][currPos.x] = true;
+        if (currPos.distance > maxAmountOfMoves) {
+          closestSnake = currPos.distance + 1;
+          break;
+        }
         if (grid[currPos.y][currPos.x] == 3) {
             closestSnake = currPos.distance;
             break;
@@ -161,6 +164,9 @@ public class MoveHelper {
       if (closestSnake > greatestDist) {
         greatestDist = closestSnake;
         bestFoodIndex = i;
+        if (greatestDist > maxAmountOfMoves){
+          break;
+        }
       }
       i++;
 
