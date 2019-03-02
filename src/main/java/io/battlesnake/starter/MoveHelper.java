@@ -128,7 +128,7 @@ public class MoveHelper {
       if(distance <= maxAmountOfMoves){
         closerFoods.add(food);
       }
-    }
+    }  //
     return closerFoods;
   }
 
