@@ -146,6 +146,10 @@ public class SnakeApplication {
       if(doLogging){LOG.info("Current Position: " + position.toString());}
 
       if (youAreAlpha(board)) {
+        String killMove = MoveHelper.returnKillMove(position, board).toString();
+        if (killMove != null) {
+          response.put("move", killMove);
+        }
         String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
         response.put("move", nextMove == null ? MoveHelper.lastResortMove(position, board) : nextMove);
         return response;
