@@ -133,6 +133,7 @@ public class MoveHelper {
   }
 
   public static String followTail(Position position, Position tailPos, Board board) {
-      return bfs(position, tailPos, board);
+      String move = bfs(position, tailPos, board);
+      return move == null ? shitMove(position, board) : move;
   }
 }
