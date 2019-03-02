@@ -9,4 +9,11 @@ public class PositionNode extends Position {
     this.distance = distance;
 
   }
+
+  public PositionNode move(Move move) {
+    int nextX = x + move.xChange;
+    int nextY = y + move.yChange;
+
+    return new PositionNode(new Position(nextX, nextY),0);
+  }
 }
