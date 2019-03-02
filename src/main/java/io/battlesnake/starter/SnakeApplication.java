@@ -145,6 +145,7 @@ public class SnakeApplication {
 
       LOG.info("Current Position: " + position.toString());
       if (health > healthThresh(moveRequest.get("turn").asInt())) {
+        board.grid[tailY][tailX] = 0;
         response.put("move", MoveHelper.followTail(position, tailPos, board));
         return response;
       }
