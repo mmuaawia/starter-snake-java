@@ -29,7 +29,7 @@ public class MoveHelper {
 
   public static String getMove(Position position, Board board) {
     if (board.foods.isEmpty()) return lastResortMove(position, board);
-    List<PositionNode> closeFoods = getCloseFoods(board.foods, position, board.height*6 / 11);
+    List<PositionNode> closeFoods = getCloseFoods(board.foods, position, Math.min(board.height/3, 5));
     if (closeFoods.isEmpty()) return lastResortMove(position, board);
     Position bestFood = safestFood(closeFoods, board);
     String move = bfs(position, bestFood, board);
@@ -38,8 +38,6 @@ public class MoveHelper {
       move = lastResortMove;
     }
     return move == null ? lastResortMove : move ;
-
-
   }
 
   public static String lastResortMove(Position position, Board board) {
