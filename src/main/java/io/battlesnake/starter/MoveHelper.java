@@ -50,7 +50,7 @@ public class MoveHelper {
     return validMoves.get(index).toString();
   }
 
-  private static String bfs(Position src, Position dest, Board board) {
+  public static String bfs(Position src, Position dest, Board board) {
     boolean[][] visited = new boolean[board.height][board.width];
     Queue<PositionNode> q = new LinkedList<>();
     PositionNode srcNode = new PositionNode(src, 0);

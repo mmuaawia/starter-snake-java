@@ -149,8 +149,17 @@ public class SnakeApplication {
         response.put("move", MoveHelper.followTail(position, tailPos, board));
         return response;
       }
+
+      if (youAreAlpha(board)) {
+        String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
+        response.put("move", nextMove == null ? MoveHelper.shitMove(position, board) : nextMove);
+      }
       response.put("move", MoveHelper.getMove(position, board));
       return response;
+    }
+
+    private boolean youAreAlpha(Board board) {
+        return false;
     }
 
     /**
@@ -169,7 +178,7 @@ public class SnakeApplication {
         return 100;
       }
       if (turn < 30) {
-        return 95;
+        return 100;
       }
       if (turn < 50) {
         return 88;
