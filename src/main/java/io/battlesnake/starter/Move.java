@@ -15,6 +15,16 @@ public enum Move {
     this.yChange = yChange;
   }
 
+  public static boolean isPositionOneMoveAway(Position src, Position dest){
+    for(Move move: Move.values()){
+      if( (src.x + move.xChange) == dest.x
+      &&  (src.y + move.yChange) == dest.y ){
+         return true;
+      }
+    }
+    return false;
+  }
+
   @Override
   public String toString() {
     return this.name().toLowerCase();

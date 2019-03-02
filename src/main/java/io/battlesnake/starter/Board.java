@@ -1,6 +1,8 @@
 package io.battlesnake.starter;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -11,20 +13,28 @@ public class Board {
 
   public ArrayList<PositionNode> foods;
   public ArrayList<PositionNode> enemyHeads;
+  public ArrayList<Integer> enemyLengths;
+  public int ourLength;
+  public int maxEnemySnakeLength;
+
+  private static final Logger LOG = LoggerFactory.getLogger(SnakeApplication.class);
+
 
   public Board(int[][] grid, int width, int height) {
     this.grid = grid;
     this.width = width;
     this.height = height;
     this.enemyHeads = new ArrayList<>();
+    this.enemyLengths = new ArrayList<>();
     this.foods = new ArrayList<>();
+    this.ourLength = 0;
+    this.maxEnemySnakeLength = 0;
   }
 
 
   public void populateBoard(JsonNode food, JsonNode snakes, JsonNode self) {
     clearBoard();
     populateBoard(food, 1);
-    int count = 0;
 
     for (JsonNode snake : snakes) {
       System.out.println(self.get(0) +" " + snake.get(0));
@@ -37,7 +47,6 @@ public class Board {
       else{
         populateBoard(snake.get("body"), 2);
       }
-      count++;
     }
   }
 
@@ -50,6 +59,17 @@ public class Board {
 
   private void populateBoard(JsonNode arrOfStuff, int val) {
     boolean headFound = false;
+
+    if (val == 2) {
+      int enemyLength = arrOfStuff.size();
+      enemyLengths.add(enemyLength);
+      if(enemyLength > maxEnemySnakeLength){
+        maxEnemySnakeLength = enemyLength;
+      }
+    }
+    else if(val == 4){
+      ourLength = arrOfStuff.size();
+    }
 
     for (JsonNode coordinate : arrOfStuff) {
       int x = coordinate.get("x").asInt();
@@ -76,6 +96,9 @@ public class Board {
     grid = new int[height][width];
     foods.clear();
     enemyHeads.clear();
+    enemyLengths.clear();
+    ourLength = 0;
+    maxEnemySnakeLength = 0;
   }
 
   @Override

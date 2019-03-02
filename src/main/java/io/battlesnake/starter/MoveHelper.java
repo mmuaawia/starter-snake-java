@@ -30,7 +30,7 @@ public class MoveHelper {
     if (board.foods.isEmpty()) return shitMove(position, board);
     List<PositionNode> closeFoods = getCloseFoods(board.foods, position, board.height*7 / 10);
     if (closeFoods.isEmpty()) return shitMove(position, board);
-    Position bestFood = bestFood(closeFoods, board);
+    Position bestFood = safestFood(closeFoods, board);
     String move = bfs(position, bestFood, board);
     return move == null ? shitMove(position, board) : move ;
 
@@ -50,6 +50,9 @@ public class MoveHelper {
     return validMoves.get(index).toString();
   }
 
+  /* Returns move to dest position , unless none found, it returns move to closest food,
+   * If no closest food, returns null
+   */
   private static String bfs(Position src, Position dest, Board board) {
     boolean[][] visited = new boolean[board.height][board.width];
     Queue<PositionNode> q = new LinkedList<>();
@@ -69,7 +72,7 @@ public class MoveHelper {
 
       for (Move move : Move.values()) {
         if (isMoveValid(currPos, move, board)) {
-          PositionNode nextPos = (PositionNode) currPos.move(move);
+          PositionNode nextPos = currPos.move(move);
           nextPos.initMove = currPos.initMove == null ? move : currPos.initMove;
           if (!visited[nextPos.y][nextPos.x])
             q.add(nextPos);
@@ -81,8 +84,9 @@ public class MoveHelper {
 
 
   }
-
-  public static Position bestFood(List<PositionNode> foods, Board board) {
+  /* returns the position of food from foods which is furthest away from enemy snake
+   */
+  public static Position safestFood(List<PositionNode> foods, Board board) {
     int[][] grid = board.grid;
     int bestFoodIndex = 0;
     int greatestDist = Integer.MIN_VALUE;
@@ -104,7 +108,7 @@ public class MoveHelper {
         }
         for (Move move : Move.values()) {
           if (isMoveValidForFoodToEnemy(currPos, move, board)) {
-              PositionNode nextPos = (PositionNode) currPos.move(move);
+              PositionNode nextPos = currPos.move(move);
               nextPos.distance = currPos.distance + 1;
               if (!visited[nextPos.y][nextPos.x])
                 q.add(nextPos);
@@ -134,5 +138,18 @@ public class MoveHelper {
 
   public static String followTail(Position position, Position tailPos, Board board) {
       return bfs(position, tailPos, board);
+  }
+
+  public static boolean isSuicide(Position position, Move move, Board board){
+    if(board.ourLength > board.maxEnemySnakeLength){
+      return false;
+    }
+    Position proposedPosition = position.move(move);
+    for(int index = 0; index < board.enemyHeads.size(); index++){
+      if(board.enemyLengths.get(index) > board.ourLength && Move.isPositionOneMoveAway(board.enemyHeads.get(0), proposedPosition)){
+        return true;
+      }
+    }
+    return false;
   }
 }
