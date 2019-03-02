@@ -43,32 +43,53 @@ public class MoveHelper {
   }
 
   public static String lastResortMove(Position position, Board board) {
-    Move bestWorstMove = null;
-    int maxMovesAfterFirstMove = 0;
+    Move lastResortMove;
 
-    for (Move move : Move.values()) {
-      if (MoveHelper.isMoveValid(position, move, board)) {
-
-        Position nextPosition = position.move(move);
-
-        int movesAfterFirstMove = 0;
-        for (Move secondMove : Move.values()) {
-          if (MoveHelper.isMoveValid(nextPosition, secondMove, board)) {
-            movesAfterFirstMove++;
-            if (movesAfterFirstMove > maxMovesAfterFirstMove) {
-              bestWorstMove = move;
-              maxMovesAfterFirstMove = movesAfterFirstMove;
-            }
-          }
-        }
-      }
-    }
-    if(bestWorstMove == null){
+    lastResortMove = getMoveIntoDirectionWithSpace(position,board,7);
+    if(lastResortMove == null){
       //were dead
       return "left";
     }
 
-    return bestWorstMove.toString();
+    return lastResortMove.toString();
+  }
+
+  public static Move getMoveIntoDirectionWithSpace(Position position, Board board, int goodEnoughAmountOfSpace){
+    Move bestCase = null;
+    int bestAmountOfSpace = 0;
+
+    boolean[][] visitedBoard = new boolean[board.height][board.width];
+    Queue<Position> toVisit = new LinkedList<>();
+
+    for (Move move : Move.values()) {
+      if (MoveHelper.isMoveValid(position, move, board)) {
+        int amountOfSpace = 1;
+        toVisit.add(position.move(move));
+
+        while(amountOfSpace < goodEnoughAmountOfSpace && !toVisit.isEmpty()) {
+          Position currPosition = toVisit.remove();
+          visitedBoard[currPosition.y][currPosition.x] = true;
+
+          for (Move nextMove : Move.values()) {
+            Position nextPosition = currPosition.move(nextMove);
+            if (MoveHelper.isMoveValid(currPosition, nextMove, board) && !visitedBoard[nextPosition.y][nextPosition.x]) {
+              amountOfSpace++;
+              toVisit.add(nextPosition);
+            }
+          }
+        }
+        if(amountOfSpace >= goodEnoughAmountOfSpace){
+          if(SnakeApplication.doLogging){LOG.info("Moving into direction: "+move.toString()+" because amount of spaces found matched good enough: "+ amountOfSpace);}
+          return move;
+        }
+        else if(amountOfSpace > bestAmountOfSpace) {
+            bestAmountOfSpace = amountOfSpace;
+            bestCase = move;
+        }
+      }
+    }
+    if(SnakeApplication.doLogging){LOG.info("Moving into direction: "+bestCase.toString()+" because amount of spaces found was not good enough: "+ bestAmountOfSpace);}
+    return bestCase;
   }
 
   /* Returns move to dest position , unless none found, it returns move to closest food,
