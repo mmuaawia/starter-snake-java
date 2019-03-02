@@ -152,7 +152,7 @@ public class SnakeApplication {
 
       if (youAreAlpha(board)) {
         String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
-        response.put("move", nextMove == null ? MoveHelper.shitMove(position, board) : nextMove);
+        response.put("move", nextMove == null ? MoveHelper.lastResortMove(position, board) : nextMove);
       }
       response.put("move", MoveHelper.getMove(position, board));
       return response;

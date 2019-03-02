@@ -27,27 +27,43 @@ public class MoveHelper {
 
 
   public static String getMove(Position position, Board board) {
-    if (board.foods.isEmpty()) return shitMove(position, board);
+    if (board.foods.isEmpty()) return lastResortMove(position, board);
     List<PositionNode> closeFoods = getCloseFoods(board.foods, position, board.height*7 / 10);
-    if (closeFoods.isEmpty()) return shitMove(position, board);
+    if (closeFoods.isEmpty()) return lastResortMove(position, board);
     Position bestFood = safestFood(closeFoods, board);
     String move = bfs(position, bestFood, board);
-    return move == null ? shitMove(position, board) : move ;
+    return move == null ? lastResortMove(position, board) : move ;
 
 
   }
 
-  public static String shitMove (Position position, Board board) {
-    List<Move> validMoves = new ArrayList<>();
+  public static String lastResortMove(Position position, Board board) {
+    Move bestWorstMove = null;
+    int maxMovesAfterFirstMove = 0;
+
     for (Move move : Move.values()) {
       if (MoveHelper.isMoveValid(position, move, board)) {
-        validMoves.add(move);
+
+        Position nextPosition = position.move(move);
+
+        int movesAfterFirstMove = 0;
+        for (Move secondMove : Move.values()) {
+          if (MoveHelper.isMoveValid(nextPosition, secondMove, board)) {
+            movesAfterFirstMove++;
+            if (movesAfterFirstMove > maxMovesAfterFirstMove) {
+              bestWorstMove = move;
+              maxMovesAfterFirstMove = movesAfterFirstMove;
+            }
+          }
+        }
       }
     }
-    Random random = new Random();
-    //will cause exception if no valid moves at the moment
-    int index = random.nextInt(validMoves.size());
-    return validMoves.get(index).toString();
+    if(bestWorstMove == null){
+      //were dead
+      return "left";
+    }
+
+    return bestWorstMove.toString();
   }
 
   /* Returns move to dest position , unless none found, it returns move to closest food,
@@ -138,7 +154,7 @@ public class MoveHelper {
 
   public static String followTail(Position position, Position tailPos, Board board) {
       String move = bfs(position, tailPos, board);
-      return move == null ? shitMove(position, board) : move;
+      return move == null ? lastResortMove(position, board) : move;
   }
 
   public static boolean isSuicide(Position position, Move move, Board board){
