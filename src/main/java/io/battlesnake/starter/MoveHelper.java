@@ -44,7 +44,7 @@ public class MoveHelper {
   public static String lastResortMove(Position position, Board board) {
     Move lastResortMove;
 
-    lastResortMove = getMoveIntoDirectionWithSpace(position,board,7);
+    lastResortMove = getMoveIntoDirectionWithSpace(position,board,10);
     if(lastResortMove == null){
       //were dead
       return "left";
