@@ -144,11 +144,11 @@ public class SnakeApplication {
       Position position = new Position(currX, currY);
 
       LOG.info("Current Position: " + position.toString());
-      if (health > healthThresh(moveRequest.get("turn").asInt())) {
-        board.grid[tailY][tailX] = 0;
-        response.put("move", MoveHelper.followTail(position, tailPos, board));
-        return response;
-      }
+//      if (health > healthThresh(moveRequest.get("turn").asInt())) {
+//        board.grid[tailY][tailX] = 0;
+//        response.put("move", MoveHelper.followTail(position, tailPos, board));
+//        return response;
+//      }
       response.put("move", MoveHelper.getMove(position, board));
       return response;
     }
