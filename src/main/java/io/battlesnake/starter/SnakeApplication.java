@@ -144,16 +144,18 @@ public class SnakeApplication {
       Position position = new Position(currX, currY);
 
       LOG.info("Current Position: " + position.toString());
+      if (youAreAlpha(board)) {
+        String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
+        response.put("move", nextMove == null ? MoveHelper.shitMove(position, board) : nextMove);
+        return response;
+      }
       if (health > healthThresh(moveRequest.get("turn").asInt())) {
         board.grid[tailY][tailX] = 0;
         response.put("move", MoveHelper.followTail(position, tailPos, board));
         return response;
       }
 
-      if (youAreAlpha(board)) {
-        String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
-        response.put("move", nextMove == null ? MoveHelper.shitMove(position, board) : nextMove);
-      }
+
       response.put("move", MoveHelper.getMove(position, board));
       return response;
     }
@@ -174,9 +176,6 @@ public class SnakeApplication {
     }
 
     static int healthThresh(int turn) {
-      if (turn < 15) {
-        return 100;
-      }
       if (turn < 30) {
         return 100;
       }
@@ -186,20 +185,8 @@ public class SnakeApplication {
       if (turn < 70) {
         return 84;
       }
-      if (turn < 100) {
-        return 73;
-      }
-      if (turn < 140) {
-        return 65;
-      }
-      if (turn < 170) {
-        return 60;
-      }
-      if (turn < 200) {
-        return 55;
-      }
       else {
-        return 50;
+        return 79;
       }
 
 
