@@ -28,7 +28,11 @@ public class MoveHelper {
     if (closeFoods.isEmpty()) return lastResortMove(position, board);
     Position bestFood = safestFood(closeFoods, board);
     String move = bfs(position, bestFood, board);
-    return move == null ? lastResortMove(position, board) : move ;
+    String lastResortMove = lastResortMove(position, board);
+    if (move != null && isSuicide(position, Move.valueOf(move.toUpperCase()), board)) {
+      move = lastResortMove;
+    }
+    return move == null ? lastResortMove : move ;
 
 
   }
