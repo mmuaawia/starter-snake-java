@@ -27,7 +27,9 @@ public class MoveHelper {
 
 
   public static String getMove(Position position, Board board) {
+    if (board.foods.isEmpty()) return shitMove(position, board);
     List<PositionNode> closeFoods = getCloseFoods(board.foods, position, Integer.MAX_VALUE);
+    //if
     Position bestFood = bestFood(closeFoods, board);
     String move = bfs(position, bestFood, board);
     return move == null ? shitMove(position, board) : move ;
