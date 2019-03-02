@@ -46,6 +46,11 @@ public class MoveHelper {
 
     lastResortMove = getMoveIntoDirectionWithSpace(position,board,10);
     if(lastResortMove == null){
+      for (Move move : Move.values()) {
+        if (MoveHelper.isMoveValid(position, move, board)){
+           return move.toString();
+        }
+      }
       //were dead
       return "left";
     }
