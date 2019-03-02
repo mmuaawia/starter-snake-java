@@ -51,7 +51,7 @@ public class MoveHelper {
   private static String bfs(Position src, Position dest, Board board) {
     boolean[][] visited = new boolean[board.height][board.width];
     Queue<PositionNode> q = new LinkedList<>();
-    PositionNode srcNode = (PositionNode) src;
+    PositionNode srcNode = new PositionNode(src, 0);
     srcNode.initMove = null;
     q.add(srcNode);
     String closestFoodMove = null;
