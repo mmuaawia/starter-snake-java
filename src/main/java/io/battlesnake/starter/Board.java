@@ -7,11 +7,13 @@ public class Board {
   public final int width;
   public final int height;
 
+
   public Board(int[][] grid, int width, int height) {
     this.grid = grid;
     this.width = width;
     this.height = height;
   }
+
 
   public void populateBoard(JsonNode food, JsonNode snakes, JsonNode self) {
     populateBoard(food, 1);
