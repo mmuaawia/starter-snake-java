@@ -180,13 +180,13 @@ public class SnakeApplication {
         return 100;
       }
       if (turn < 50) {
-        return 88;
+        return 95;
       }
       if (turn < 70) {
-        return 84;
+        return 93;
       }
       else {
-        return 79;
+        return 88;
       }
 
 
