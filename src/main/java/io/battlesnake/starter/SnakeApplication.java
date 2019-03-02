@@ -144,7 +144,7 @@ public class SnakeApplication {
       Position position = new Position(currX, currY);
 
       LOG.info("Current Position: " + position.toString());
-      if (youAreAlpha(board)) {
+      if (youAreAlpha(board) || moveRequest.get("turn").asInt() > 50) {
         String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
         response.put("move", nextMove == null ? MoveHelper.lastResortMove(position, board) : nextMove);
         return response;
