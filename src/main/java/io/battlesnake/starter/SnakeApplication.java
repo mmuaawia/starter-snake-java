@@ -177,18 +177,13 @@ public class SnakeApplication {
     }
 
     static int healthThresh(int turn) {
-      if (turn < 30) {
+      if (turn < 40) {
         return 100;
       }
       if (turn < 50) {
         return 95;
       }
-      if (turn < 70) {
-        return 93;
-      }
-      else {
-        return 90;
-      }
+      else return 94;
 
 
     }
