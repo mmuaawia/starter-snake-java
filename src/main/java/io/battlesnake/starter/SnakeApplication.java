@@ -24,7 +24,7 @@ public class SnakeApplication {
   private static final Logger LOG = LoggerFactory.getLogger(SnakeApplication.class);
   private static Board board;
   static int health;
-  private static boolean doLogging = true;
+  public static boolean doLogging = true;
 
   /**
    * Main entry point.
@@ -148,13 +148,16 @@ public class SnakeApplication {
       if (youAreAlpha(board)) {
         Move killMove = MoveHelper.returnKillMove(position, board);
         if (killMove != null) {
-          response.put("move", killMove.toString());
+          if(doLogging){LOG.info("Using KillMove");}
+          response.put("move", killMove);
         }
         String nextMove = MoveHelper.bfs(position, new Position(-1,-1), board);
+        if(nextMove == null && doLogging){LOG.info("we are alpha, no closest food food, using last resort");}
         response.put("move", nextMove == null ? MoveHelper.lastResortMove(position, board) : nextMove);
         return response;
       }
       if (health > healthThresh(moveRequest.get("turn").asInt())) {
+        if(doLogging){LOG.info("chasing tail");}
         board.grid[tailY][tailX] = 0;
         response.put("move", MoveHelper.followTail(position, tailPos, board));
         return response;
